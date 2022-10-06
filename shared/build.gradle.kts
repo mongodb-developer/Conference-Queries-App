@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
     id("com.android.library")
-    //id("io.realm.kotlin")
+    id("io.realm.kotlin")
 }
 
 kotlin {
@@ -63,9 +63,9 @@ kotlin {
 
 android {
     namespace = "com.mongodb.dublinmug_kmm"
-    compileSdk = 32
+    compileSdk = 33
     defaultConfig {
         minSdk = 21
-        targetSdk = 32
+        targetSdk = 33
     }
 }

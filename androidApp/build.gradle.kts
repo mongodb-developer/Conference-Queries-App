@@ -42,7 +42,7 @@ dependencies {
     // Integration with activities
     implementation("androidx.activity:activity-compose:1.6.0")
     // Compose Material Design
-    implementation("androidx.compose.material3:material3:1.0.0-beta03")
+    implementation("androidx.compose.material3:material3:1.0.0-rc01")
     // Animations
     implementation("androidx.compose.animation:animation:1.2.1")
     // Tooling support (Previews, etc.)
@@ -61,8 +61,4 @@ dependencies {
     }
 
     compileOnly("io.realm.kotlin:library-sync:1.1.0")
-
-
-
-
 }
