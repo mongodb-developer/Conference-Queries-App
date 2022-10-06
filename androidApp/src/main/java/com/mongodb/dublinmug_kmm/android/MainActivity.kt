@@ -138,7 +138,7 @@ fun AddQuery(viewModel: MainViewModel) {
 @Composable
 fun QueriesList(viewModel: MainViewModel) {
 
-    val queries = viewModel.queries.observeAsState(initial = emptyList<String>()).value
+    val queries = viewModel.queries.observeAsState(initial = emptyList()).value
 
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(12.dp),
