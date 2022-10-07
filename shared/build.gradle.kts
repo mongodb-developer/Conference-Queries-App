@@ -30,7 +30,7 @@ kotlin {
                         strictly("1.6.0-native-mt")
                     }
                 }
-                implementation("io.realm.kotlin:library-sync:1.1.0")
+                implementation("io.realm.kotlin:library-sync:1.2.0")
             }
         }
         val commonTest by getting {

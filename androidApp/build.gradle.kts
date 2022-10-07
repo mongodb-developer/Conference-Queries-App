@@ -60,5 +60,5 @@ dependencies {
         }
     }
 
-    compileOnly("io.realm.kotlin:library-sync:1.1.0")
+    compileOnly("io.realm.kotlin:library-sync:1.2.0")
 }
