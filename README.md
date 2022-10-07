@@ -3,6 +3,11 @@
 
 A basic application, which can take queries or question during session. This application is based on Kotlin Multiplatform(KMM) and Realm Sync(Flexible). 
 
+## License
+
+This project is licensed under the terms of the [Apache license 2.0](./LICENSE.txt).
+
+
 ## Resources
 
 To learn more about Realm/MongoDB you have all these fantastic resources:
