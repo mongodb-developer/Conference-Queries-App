@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Dublin_Mug_-_KMM"
+rootProject.name = "Ask Me?"
 include(":androidApp")
 include(":shared")
