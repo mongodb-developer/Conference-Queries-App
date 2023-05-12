@@ -3,16 +3,15 @@ package com.mongodb.dublinmug_kmm
 import CommonFlow
 import asCommonFlow
 import io.realm.kotlin.Realm
+import io.realm.kotlin.UpdatePolicy
+import io.realm.kotlin.ext.asFlow
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.log.LogLevel
 import io.realm.kotlin.mongodb.*
 import io.realm.kotlin.mongodb.sync.SyncConfiguration
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import io.realm.kotlin.notifications.InitialResults
+import io.realm.kotlin.notifications.UpdatedResults
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 class RealmRepo {
 
@@ -55,12 +54,23 @@ class RealmRepo {
         }
     }
 
-    suspend fun getAllData(): CommonFlow<List<String>> {
+    suspend fun editInfo(queryInfo: QueryInfo) {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
+
+        realm.write {
+            copyToRealm(queryInfo, updatePolicy = UpdatePolicy.ALL)
+            }
+        }
+
+    suspend fun getAllData(): CommonFlow<List<QueryInfo>> {
+        if (!this::realm.isInitialized) {
+            setupRealmSync()
+        }
+
         return realm.query<QueryInfo>().asFlow().map {
-            it.list.map { it.queries }
+            it.list
         }.asCommonFlow()
     }
 }
