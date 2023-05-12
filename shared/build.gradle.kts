@@ -25,12 +25,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt") {
-                    version {
-                        strictly("1.6.0-native-mt")
-                    }
-                }
-                implementation("io.realm.kotlin:library-sync:1.1.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                implementation("io.realm.kotlin:library-sync:1.7.0")
             }
         }
         val commonTest by getting {
