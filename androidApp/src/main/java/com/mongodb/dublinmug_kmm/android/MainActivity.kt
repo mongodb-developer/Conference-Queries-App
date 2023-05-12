@@ -3,13 +3,11 @@
 package com.mongodb.dublinmug_kmm.android
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,15 +25,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlin.math.log
+import com.mongodb.dublinmug_kmm.QueryInfo
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,14 +48,18 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Container() {
     val viewModel = viewModel<MainViewModel>()
+    val onEditRequest = remember { mutableStateOf(QueryInfo()) }
 
+    val onEditClick = { query: QueryInfo ->
+        onEditRequest.value = query
+    }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "MongoDB Dublin Mug",
+                        text = "Ask me?",
                         fontSize = 24.sp,
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
@@ -93,7 +93,7 @@ fun Container() {
                 )
             }
 
-            AddQuery(viewModel)
+            AddQuery(viewModel, onEditRequest)
 
             Text(
                 "Queries",
@@ -104,16 +104,14 @@ fun Container() {
                 fontSize = 24.sp
             )
 
-            QueriesList(viewModel)
+            QueriesList(viewModel, onEditClick)
         }
     }
 }
 
 
 @Composable
-fun AddQuery(viewModel: MainViewModel) {
-
-    val queryText = remember { mutableStateOf("") }
+fun AddQuery(viewModel: MainViewModel, query: MutableState<QueryInfo>) {
 
     TextField(
         modifier = Modifier
@@ -125,18 +123,22 @@ fun AddQuery(viewModel: MainViewModel) {
                 painterResource(id = R.drawable.ic_baseline_send_24),
                 contentDescription = "",
                 modifier = Modifier.clickable {
-                    viewModel.saveQuery(queryText.value)
-                    queryText.value = ""
+                    viewModel.onSendClick(query.value)
+                    query.value = QueryInfo()
                 })
         },
-        value = queryText.value,
+        value = query.value.queries,
         onValueChange = {
-            queryText.value = it
-        })
+            query.value = QueryInfo().apply {
+                _id = query.value._id
+                queries = it
+            }
+        }
+    )
 }
 
 @Composable
-fun QueriesList(viewModel: MainViewModel) {
+fun QueriesList(viewModel: MainViewModel, onEditClick: (QueryInfo) -> Unit) {
 
     val queries = viewModel.queries.observeAsState(initial = emptyList()).value
 
@@ -144,8 +146,8 @@ fun QueriesList(viewModel: MainViewModel) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
         contentPadding = PaddingValues(8.dp),
         content = {
-            items(items = queries, itemContent = { item: String ->
-                QueryItem(query = item)
+            items(items = queries, itemContent = { item: QueryInfo ->
+                QueryItem(query = item, onEditClick)
             })
         })
 }
@@ -153,25 +155,34 @@ fun QueriesList(viewModel: MainViewModel) {
 @Preview
 @Composable
 fun QueryPreview() {
-    QueryItem(query = "Sample text")
+    QueryItem(query = QueryInfo().apply {
+        queries = "Sample text"
+    }, onEditClick = {})
 }
 
 @Composable
-fun QueryItem(query: String) {
+fun QueryItem(query: QueryInfo, onEditClick: (QueryInfo) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
             .padding(8.dp)
-            .clip(RoundedCornerShape(8.dp))
-    ) {
-        Text(text = query, modifier = Modifier.fillMaxWidth())
-    }
-}
+            .clip(RoundedCornerShape(8.dp)),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
 
-@Composable
-fun Greeting(text: String) {
-    Text(text = text)
+    ) {
+        Text(text = query.queries, modifier = Modifier.fillMaxWidth(0.95f))
+
+        IconButton(onClick = {
+            onEditClick(query)
+        }) {
+            Icon(
+                painter = painterResource(id = R.drawable.baseline_edit_24),
+                contentDescription = "Edit"
+            )
+        }
+    }
 }
 
 
