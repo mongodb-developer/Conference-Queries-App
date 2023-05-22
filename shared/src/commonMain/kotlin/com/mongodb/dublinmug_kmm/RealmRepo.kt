@@ -66,4 +66,23 @@ class RealmRepo {
             it.list
         }.asCommonFlow()
     }
+
+    suspend fun dummyData() {
+        for (i in 1..100) {
+            val info = QueryInfo().apply {
+                _id = RandomUUID().randomId
+                queries = "random"
+            }
+            realm.write {
+                copyToRealm(info)
+            }
+        }
+    }
+
+    suspend fun removeDummyData(){
+        realm.write {
+            val items = query<QueryInfo>("queries = $0","random").find()
+            delete(items)
+        }
+    }
 }
