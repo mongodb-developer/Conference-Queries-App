@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Ask Me?"
+rootProject.name = "Ask Me"
 include(":androidApp")
 include(":shared")
