@@ -4,14 +4,15 @@ import CommonFlow
 import asCommonFlow
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
-import io.realm.kotlin.ext.asFlow
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.log.LogLevel
-import io.realm.kotlin.mongodb.*
+import io.realm.kotlin.mongodb.App
+import io.realm.kotlin.mongodb.AppConfiguration
+import io.realm.kotlin.mongodb.Credentials
 import io.realm.kotlin.mongodb.sync.SyncConfiguration
-import io.realm.kotlin.notifications.InitialResults
-import io.realm.kotlin.notifications.UpdatedResults
+import io.realm.kotlin.query.find
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 
 class RealmRepo {
 
@@ -24,8 +25,12 @@ class RealmRepo {
         App.create(configuration)
     }
 
-    private suspend fun setupRealmSync() {
-        val user = appServiceInstance.login(Credentials.anonymous())
+    init {
+        setupRealmSync()
+    }
+
+    private fun setupRealmSync() {
+        val user = runBlocking { appServiceInstance.login(Credentials.anonymous()) }
         val config = SyncConfiguration
             .Builder(user, setOf(QueryInfo::class))
             .initialSubscriptions { realm ->
@@ -41,10 +46,6 @@ class RealmRepo {
     }
 
     suspend fun saveInfo(query: String) {
-        if (!this::realm.isInitialized) {
-            setupRealmSync()
-        }
-
         val info = QueryInfo().apply {
             _id = RandomUUID().randomId
             queries = query
@@ -55,20 +56,12 @@ class RealmRepo {
     }
 
     suspend fun editInfo(queryInfo: QueryInfo) {
-        if (!this::realm.isInitialized) {
-            setupRealmSync()
-        }
-
         realm.write {
             copyToRealm(queryInfo, updatePolicy = UpdatePolicy.ALL)
-            }
         }
+    }
 
-    suspend fun getAllData(): CommonFlow<List<QueryInfo>> {
-        if (!this::realm.isInitialized) {
-            setupRealmSync()
-        }
-
+    fun getAllData(): CommonFlow<List<QueryInfo>> {
         return realm.query<QueryInfo>().asFlow().map {
             it.list
         }.asCommonFlow()
