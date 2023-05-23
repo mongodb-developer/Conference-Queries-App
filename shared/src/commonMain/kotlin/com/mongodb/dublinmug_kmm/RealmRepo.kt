@@ -10,7 +10,7 @@ import io.realm.kotlin.mongodb.App
 import io.realm.kotlin.mongodb.AppConfiguration
 import io.realm.kotlin.mongodb.Credentials
 import io.realm.kotlin.mongodb.sync.SyncConfiguration
-import io.realm.kotlin.query.find
+import io.realm.kotlin.query.Sort
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
@@ -62,9 +62,12 @@ class RealmRepo {
     }
 
     fun getAllData(): CommonFlow<List<QueryInfo>> {
-        return realm.query<QueryInfo>().asFlow().map {
-            it.list
-        }.asCommonFlow()
+        return realm.query<QueryInfo>()
+            .sort(property = "timestamp", sortOrder = Sort.DESCENDING)
+            .asFlow()
+            .map {
+                it.list
+            }.asCommonFlow()
     }
 
     suspend fun dummyData() {
@@ -79,9 +82,9 @@ class RealmRepo {
         }
     }
 
-    suspend fun removeDummyData(){
+    suspend fun removeDummyData() {
         realm.write {
-            val items = query<QueryInfo>("queries = $0","random").find()
+            val items = query<QueryInfo>("queries = $0", "random").find()
             delete(items)
         }
     }

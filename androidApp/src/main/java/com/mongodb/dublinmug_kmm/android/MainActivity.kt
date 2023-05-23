@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -24,7 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -113,6 +118,8 @@ fun Container() {
 @Composable
 fun AddQuery(viewModel: MainViewModel, query: MutableState<QueryInfo>) {
 
+    val inputState = LocalTextInputService.current
+
     TextField(
         modifier = Modifier
             .fillMaxWidth()
@@ -125,6 +132,7 @@ fun AddQuery(viewModel: MainViewModel, query: MutableState<QueryInfo>) {
                 modifier = Modifier.clickable {
                     viewModel.onSendClick(query.value)
                     query.value = QueryInfo()
+                    inputState?.hideSoftwareKeyboard()
                 })
         },
         value = query.value.queries,
@@ -133,7 +141,9 @@ fun AddQuery(viewModel: MainViewModel, query: MutableState<QueryInfo>) {
                 _id = query.value._id
                 queries = it
             }
-        }
+        },
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = KeyboardType.Text),
+        keyboardActions = KeyboardActions(onDone = { inputState?.hideSoftwareKeyboard() })
     )
 }
 
