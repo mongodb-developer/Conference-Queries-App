@@ -26,7 +26,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-                implementation("io.realm.kotlin:library-sync:1.7.0")
+                implementation("io.realm.kotlin:library-sync:1.9.0")
             }
         }
         val commonTest by getting {

@@ -40,9 +40,9 @@ dependencies {
 
     // Compose 
     // Integration with activities
-    implementation("androidx.activity:activity-compose:1.7.1")
+    implementation("androidx.activity:activity-compose:1.7.2")
     // Compose Material Design
-    implementation("androidx.compose.material3:material3:1.0.0-rc01")
+    implementation("androidx.compose.material3:material3:1.1.0")
     // Animations
     implementation("androidx.compose.animation:animation:1.4.3")
     // Integration with ViewModels
@@ -51,5 +51,5 @@ dependencies {
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.3")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
-    compileOnly("io.realm.kotlin:library-sync:1.7.0")
+    compileOnly("io.realm.kotlin:library-sync:1.9.0")
 }

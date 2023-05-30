@@ -6,7 +6,7 @@ plugins {
     kotlin("android").version("1.8.21").apply(false)
     kotlin("multiplatform").version("1.8.21").apply(false)
 
-    id("io.realm.kotlin") version "1.8.0"
+    id("io.realm.kotlin") version "1.9.0"
 }
 
 tasks.register("clean", Delete::class) {
